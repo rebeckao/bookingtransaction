@@ -15,6 +15,6 @@ public class BookingTransactionRouter {
     public RouterFunction<ServerResponse> route(BookingTransactionHandler bookingTransactionHandler) {
 
         return RouterFunctions
-                .route(POST("/process-transaction").and(accept(MediaType.TEXT_PLAIN)), bookingTransactionHandler::process);
+                .route(POST("/process-transactions").and(accept(MediaType.TEXT_PLAIN)), bookingTransactionHandler::process);
     }
 }
