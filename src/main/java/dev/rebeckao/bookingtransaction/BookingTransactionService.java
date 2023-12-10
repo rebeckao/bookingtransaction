@@ -2,11 +2,8 @@ package dev.rebeckao.bookingtransaction;
 
 import dev.rebeckao.bookingtransaction.model.RejectedTransaction;
 import dev.rebeckao.bookingtransaction.persistence.UserEntity;
+import dev.rebeckao.bookingtransaction.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -14,8 +11,9 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class BookingTransactionService {
+
     @Autowired
-    private ReactiveMongoTemplate reactiveMongoTemplate;
+    private UserRepository userRepository;
 
     @Transactional
     public Mono<RejectedTransaction> processTransaction(String rawTransaction) {
@@ -23,35 +21,24 @@ public class BookingTransactionService {
         if (transactionParts.length != 5) {
             throw new IllegalArgumentException("Invalid input: " + rawTransaction);
         }
+        String firstName = transactionParts[0];
+        String lastName = transactionParts[1];
         String emailId = transactionParts[2];
         int cost = Integer.parseInt(transactionParts[3]);
+        String transactionId = transactionParts[4];
 
-        Query query = Query.query(Criteria
-                .where("emailId").is(emailId)
-                .and("creditLimit").gte(cost));
-
-        Update update = new Update()
-                .inc("creditLimit", -cost);
-
-        return reactiveMongoTemplate.updateFirst(query, update, UserEntity.class)
-                .flatMap(updateResult -> {
-                    if (updateResult.getMatchedCount() > 0) {
-                        return Mono.empty();
-                    } else {
-                        return Mono.just(new RejectedTransaction(transactionParts[0], transactionParts[1], emailId, transactionParts[4]));
-                    }
-                });
+        return userRepository.getRejectedTransactionMono(emailId, cost, firstName, lastName, transactionId);
     }
 
     public Flux<UserEntity> getPersistedData() {
-        return reactiveMongoTemplate.findAll(UserEntity.class);
+        return userRepository.getPersistedData();
     }
 
     public Mono<Void> clearPersistedData() {
-        return reactiveMongoTemplate.dropCollection(UserEntity.class);
+        return userRepository.clearPersistedData();
     }
 
     public Mono<UserEntity> setCreditLimit(String emailId, Integer creditLimit) {
-        return reactiveMongoTemplate.insert(new UserEntity(emailId, creditLimit));
+        return userRepository.setCreditLimit(emailId, creditLimit);
     }
 }
