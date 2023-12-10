@@ -2,7 +2,7 @@ package dev.rebeckao.bookingtransaction;
 
 import dev.rebeckao.bookingtransaction.model.RejectedTransaction;
 import dev.rebeckao.bookingtransaction.model.TransactionResponse;
-import dev.rebeckao.bookingtransaction.persistence.CustomerEntity;
+import dev.rebeckao.bookingtransaction.persistence.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -34,10 +34,10 @@ public class BookingTransactionHandler {
     }
 
     public Mono<ServerResponse> getPersistedData(ServerRequest serverRequest) {
-        Flux<CustomerEntity> data = bookingTransactionService.getPersistedData();
+        Flux<UserEntity> data = bookingTransactionService.getPersistedData();
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_NDJSON)
-                .body(data, CustomerEntity.class);
+                .body(data, UserEntity.class);
     }
 
     public Mono<ServerResponse> clearPersistedData(ServerRequest serverRequest) {

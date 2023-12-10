@@ -1,7 +1,7 @@
 package dev.rebeckao.bookingtransaction;
 
 import dev.rebeckao.bookingtransaction.model.RejectedTransaction;
-import dev.rebeckao.bookingtransaction.persistence.CustomerEntity;
+import dev.rebeckao.bookingtransaction.persistence.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -33,7 +33,7 @@ public class BookingTransactionService {
         Update update = new Update()
                 .inc("creditLimit", -cost);
 
-        return reactiveMongoTemplate.updateFirst(query, update, CustomerEntity.class)
+        return reactiveMongoTemplate.updateFirst(query, update, UserEntity.class)
                 .flatMap(updateResult -> {
                     if (updateResult.getMatchedCount() > 0) {
                         return Mono.empty();
@@ -43,15 +43,15 @@ public class BookingTransactionService {
                 });
     }
 
-    public Flux<CustomerEntity> getPersistedData() {
-        return reactiveMongoTemplate.findAll(CustomerEntity.class);
+    public Flux<UserEntity> getPersistedData() {
+        return reactiveMongoTemplate.findAll(UserEntity.class);
     }
 
     public Mono<Void> clearPersistedData() {
-        return reactiveMongoTemplate.dropCollection(CustomerEntity.class);
+        return reactiveMongoTemplate.dropCollection(UserEntity.class);
     }
 
-    public Mono<CustomerEntity> setCreditLimit(String emailId, Integer creditLimit) {
-        return reactiveMongoTemplate.insert(new CustomerEntity(emailId, creditLimit));
+    public Mono<UserEntity> setCreditLimit(String emailId, Integer creditLimit) {
+        return reactiveMongoTemplate.insert(new UserEntity(emailId, creditLimit));
     }
 }

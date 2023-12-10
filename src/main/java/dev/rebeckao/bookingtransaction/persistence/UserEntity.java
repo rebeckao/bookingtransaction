@@ -9,11 +9,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 
-@Document
+@Document("Users")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public @Data class CustomerEntity implements Serializable {
+public @Data class UserEntity implements Serializable {
     @Id
     private String emailId;
     private int creditLimit;
