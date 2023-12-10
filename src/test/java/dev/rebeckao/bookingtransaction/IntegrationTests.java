@@ -1,6 +1,6 @@
 package dev.rebeckao.bookingtransaction;
 
-import dev.rebeckao.bookingtransaction.model.Transaction;
+import dev.rebeckao.bookingtransaction.model.FailedTransaction;
 import dev.rebeckao.bookingtransaction.model.TransactionResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +20,13 @@ public class IntegrationTests {
     void processSuccessfulAndFailedTransactions() {
         WebTestClient client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port).build();
 
+        for (String emailId : List.of("john@doe.com", "john@doe1.com", "john@doe2.com")) {
+            client.put()
+                    .uri("/set-credit-limit/" + emailId)
+                    .bodyValue(200)
+                    .exchange();
+        }
+
         client.post()
                 .uri("/process-transactions")
                 .bodyValue("""
@@ -34,8 +41,8 @@ public class IntegrationTests {
                 .isOk()
                 .expectBody(TransactionResponse.class)
                 .isEqualTo(new TransactionResponse(List.of(
-                        new Transaction("John", "Doe2", "john@doe2.com", "TR0003"),
-                        new Transaction("John", "Doe", "john@doe.com", "TR0005")
+                        new FailedTransaction("John", "Doe2", "john@doe2.com", "TR0003"),
+                        new FailedTransaction("John", "Doe", "john@doe.com", "TR0005")
                 )));
 
     }
