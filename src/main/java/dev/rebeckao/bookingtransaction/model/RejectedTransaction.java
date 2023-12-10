@@ -2,7 +2,7 @@ package dev.rebeckao.bookingtransaction.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record FailedTransaction(
+public record RejectedTransaction(
         @JsonProperty("First Name")
         String firstName,
         @JsonProperty("Last Name")

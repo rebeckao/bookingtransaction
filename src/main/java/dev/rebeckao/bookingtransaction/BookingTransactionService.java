@@ -1,6 +1,6 @@
 package dev.rebeckao.bookingtransaction;
 
-import dev.rebeckao.bookingtransaction.model.FailedTransaction;
+import dev.rebeckao.bookingtransaction.model.RejectedTransaction;
 import dev.rebeckao.bookingtransaction.persistence.CustomerEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
@@ -18,7 +18,7 @@ public class BookingTransactionService {
     private ReactiveMongoTemplate reactiveMongoTemplate;
 
     @Transactional
-    public Mono<FailedTransaction> processTransaction(String rawTransaction) {
+    public Mono<RejectedTransaction> processTransaction(String rawTransaction) {
         String[] transactionParts = rawTransaction.replace("\"", "").split(",");
         if (transactionParts.length != 5) {
             throw new IllegalArgumentException("Invalid input: " + rawTransaction);
@@ -38,7 +38,7 @@ public class BookingTransactionService {
                     if (updateResult.getMatchedCount() > 0) {
                         return Mono.empty();
                     } else {
-                        return Mono.just(new FailedTransaction(transactionParts[0], transactionParts[1], emailId, transactionParts[4]));
+                        return Mono.just(new RejectedTransaction(transactionParts[0], transactionParts[1], emailId, transactionParts[4]));
                     }
                 });
     }

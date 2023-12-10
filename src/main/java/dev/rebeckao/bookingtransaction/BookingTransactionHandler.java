@@ -1,6 +1,6 @@
 package dev.rebeckao.bookingtransaction;
 
-import dev.rebeckao.bookingtransaction.model.FailedTransaction;
+import dev.rebeckao.bookingtransaction.model.RejectedTransaction;
 import dev.rebeckao.bookingtransaction.model.TransactionResponse;
 import dev.rebeckao.bookingtransaction.persistence.CustomerEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class BookingTransactionHandler {
                 );
     }
 
-    private Flux<FailedTransaction> processTransactions(String rawTransactions) {
+    private Flux<RejectedTransaction> processTransactions(String rawTransactions) {
         return Flux.fromArray(rawTransactions.split("\\r?\\n|\\r"))
                 .flatMapSequential(bookingTransactionService::processTransaction)
                 .mapNotNull(it -> it);

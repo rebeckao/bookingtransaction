@@ -1,6 +1,6 @@
 package dev.rebeckao.bookingtransaction;
 
-import dev.rebeckao.bookingtransaction.model.FailedTransaction;
+import dev.rebeckao.bookingtransaction.model.RejectedTransaction;
 import dev.rebeckao.bookingtransaction.model.TransactionResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,8 +41,8 @@ public class IntegrationTests {
                 .isOk()
                 .expectBody(TransactionResponse.class)
                 .isEqualTo(new TransactionResponse(List.of(
-                        new FailedTransaction("John", "Doe2", "john@doe2.com", "TR0003"),
-                        new FailedTransaction("John", "Doe", "john@doe.com", "TR0005")
+                        new RejectedTransaction("John", "Doe2", "john@doe2.com", "TR0003"),
+                        new RejectedTransaction("John", "Doe", "john@doe.com", "TR0005")
                 )));
 
     }
