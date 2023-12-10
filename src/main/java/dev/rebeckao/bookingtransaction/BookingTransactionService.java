@@ -16,7 +16,7 @@ public class BookingTransactionService {
     private UserRepository userRepository;
 
     @Transactional
-    public Mono<RejectedTransaction> processTransaction(String rawTransaction) {
+    public Mono<RejectedTransaction> parseAndProcessTransaction(String rawTransaction) {
         String[] transactionParts = rawTransaction.replace("\"", "").split(",");
         if (transactionParts.length != 5) {
             throw new IllegalArgumentException("Invalid input: " + rawTransaction);
@@ -27,7 +27,7 @@ public class BookingTransactionService {
         int cost = Integer.parseInt(transactionParts[3]);
         String transactionId = transactionParts[4];
 
-        return userRepository.getRejectedTransactionMono(emailId, cost, firstName, lastName, transactionId);
+        return userRepository.processTransaction(emailId, cost, firstName, lastName, transactionId);
     }
 
     public Flux<UserEntity> getPersistedData() {

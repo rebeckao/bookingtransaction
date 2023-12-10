@@ -16,7 +16,7 @@ public class UserRepository {
     @Autowired
     private ReactiveMongoTemplate reactiveMongoTemplate;
 
-    public Mono<RejectedTransaction> getRejectedTransactionMono(String emailId, int cost, String firstName, String lastName, String transactionId) {
+    public Mono<RejectedTransaction> processTransaction(String emailId, int cost, String firstName, String lastName, String transactionId) {
         Query query = Query.query(Criteria
                 .where("emailId").is(emailId)
                 .and("creditLimit").gte(cost));

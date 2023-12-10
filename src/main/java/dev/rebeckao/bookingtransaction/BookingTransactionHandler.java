@@ -34,7 +34,7 @@ public class BookingTransactionHandler {
 
     private Flux<RejectedTransaction> processTransactions(String rawTransactions) {
         return Flux.fromArray(rawTransactions.split("\\r?\\n|\\r"))
-                .flatMapSequential(bookingTransactionService::processTransaction)
+                .flatMapSequential(bookingTransactionService::parseAndProcessTransaction)
                 .mapNotNull(it -> it);
     }
 
