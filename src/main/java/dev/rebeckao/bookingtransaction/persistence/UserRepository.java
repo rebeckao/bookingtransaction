@@ -42,7 +42,12 @@ public class UserRepository {
         return reactiveMongoTemplate.dropCollection(UserEntity.class);
     }
 
-    public Mono<UserEntity> setCreditLimit(String emailId, Integer creditLimit) {
-        return reactiveMongoTemplate.insert(new UserEntity(emailId, creditLimit));
+    public Mono<UserEntity> setCreditLimit(UserEntity userEntity) {
+        return reactiveMongoTemplate.upsert(
+                Query.query(Criteria
+                        .where("emailId").is(userEntity.getEmailId())),
+                new Update().set("creditLimit", userEntity.getCreditLimit()),
+                UserEntity.class
+        ).map(it -> userEntity);
     }
 }

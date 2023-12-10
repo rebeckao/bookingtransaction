@@ -4,6 +4,7 @@ import dev.rebeckao.bookingtransaction.model.RejectedTransaction;
 import dev.rebeckao.bookingtransaction.model.TransactionResponse;
 import dev.rebeckao.bookingtransaction.persistence.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -11,6 +12,10 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
+
+import static org.springframework.web.reactive.function.BodyInserters.empty;
 
 @Component
 public class BookingTransactionHandler {
@@ -41,14 +46,15 @@ public class BookingTransactionHandler {
     }
 
     public Mono<ServerResponse> clearPersistedData(ServerRequest serverRequest) {
-        return bookingTransactionService.clearPersistedData().flatMap(it -> ServerResponse.ok().body(BodyInserters.empty()));
+        return bookingTransactionService.clearPersistedData().flatMap(it -> ServerResponse.ok().body(empty()));
     }
 
-    public Mono<ServerResponse> setCreditLimit(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(Integer.class)
-                .flatMap(it -> bookingTransactionService.setCreditLimit(serverRequest.pathVariable("emailId"), it))
-                .flatMap(it -> ServerResponse.ok()
+    public Mono<ServerResponse> setCreditLimits(ServerRequest serverRequest) {
+        Flux<UserEntity> updatedUsers = serverRequest.bodyToMono(new ParameterizedTypeReference<List<UserEntity>>() {})
+                .flatMapIterable(it -> it)
+                .flatMap(it -> bookingTransactionService.setCreditLimit(it));
+        return ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(it)));
+                        .body(updatedUsers, UserEntity.class);
     }
 }

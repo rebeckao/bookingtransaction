@@ -2,6 +2,7 @@ package dev.rebeckao.bookingtransaction;
 
 import dev.rebeckao.bookingtransaction.model.RejectedTransaction;
 import dev.rebeckao.bookingtransaction.model.TransactionResponse;
+import dev.rebeckao.bookingtransaction.persistence.UserEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -20,12 +21,20 @@ public class IntegrationTests {
     void processSuccessfulAndFailedTransactions() {
         WebTestClient client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port).build();
 
-        for (String emailId : List.of("john@doe.com", "john@doe1.com", "john@doe2.com")) {
-            client.put()
-                    .uri("/set-credit-limit/" + emailId)
-                    .bodyValue(200)
-                    .exchange();
-        }
+        client.delete()
+                .uri("/persisted-data")
+                .exchange();
+
+        client.put()
+                .uri("/set-credit-limits")
+                .bodyValue(List.of(
+                        new UserEntity("john@doe.com", 200),
+                        new UserEntity("john@doe1.com", 200),
+                        new UserEntity("john@doe2.com", 200)
+                ))
+                .exchange()
+                .expectStatus()
+                .isOk();
 
         client.post()
                 .uri("/process-transactions")

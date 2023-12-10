@@ -17,6 +17,6 @@ public class BookingTransactionRouter {
         return route(POST("/process-transactions").and(accept(MediaType.TEXT_PLAIN)), bookingTransactionHandler::process)
                 .andRoute(GET("/persisted-data"), bookingTransactionHandler::getPersistedData)
                 .andRoute(DELETE("/persisted-data"), bookingTransactionHandler::clearPersistedData)
-                .andRoute(PUT("/set-credit-limit/{emailId}"), bookingTransactionHandler::setCreditLimit);
+                .andRoute(PUT("/set-credit-limits").and(accept(MediaType.APPLICATION_JSON)), bookingTransactionHandler::setCreditLimits);
     }
 }

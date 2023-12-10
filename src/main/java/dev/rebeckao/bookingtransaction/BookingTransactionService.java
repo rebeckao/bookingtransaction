@@ -38,7 +38,7 @@ public class BookingTransactionService {
         return userRepository.clearPersistedData();
     }
 
-    public Mono<UserEntity> setCreditLimit(String emailId, Integer creditLimit) {
-        return userRepository.setCreditLimit(emailId, creditLimit);
+    public Mono<UserEntity> setCreditLimit(UserEntity userEntity) {
+        return userRepository.setCreditLimit(userEntity);
     }
 }
