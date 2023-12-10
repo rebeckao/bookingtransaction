@@ -1,0 +1,116 @@
+{
+	"info": {
+		"_postman_id": "a76b70a5-2893-41eb-a031-d71a793cc962",
+		"name": "Booking Transaction",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28515026"
+	},
+	"item": [
+		{
+			"name": "Set Credit Limits",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"emailId\": \"john@doe.com\",\r\n        \"creditLimit\": 200\r\n    },\r\n    {\r\n        \"emailId\": \"john@doe1.com\",\r\n        \"creditLimit\": 200\r\n    },\r\n    {\r\n        \"emailId\": \"john@doe2.com\",\r\n        \"creditLimit\": 200\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/set-credit-limits",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"set-credit-limits"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Process Transactions",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\"John,Doe,john@doe.com,190,TR0001\"\r\n\"John,Doe1,john@doe1.com,200,TR0001\"\r\n\"John,Doe2,john@doe2.com,201,TR0003\"\r\n\"John,Doe,john@doe.com,9,TR0004\"\r\n\"John,Doe,john@doe.com,2,TR0005\""
+				},
+				"url": {
+					"raw": "localhost:8080/process-transactions",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"process-transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Clear Persisted Data",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Credit Limit\": 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/persisted-data",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"persisted-data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Persisted Data",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Credit Limit\": 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/persisted-data",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"persisted-data"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
